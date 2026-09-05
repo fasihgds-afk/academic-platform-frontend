@@ -14,6 +14,7 @@ import { useAuth } from "../context/AuthContext";
 import { TableSkeleton } from "../components/Loader";
 import {
   ORDER_STATUSES,
+  WRITER_MANAGER_STATUSES,
   formatDateShort,
   formatMoney,
   formatOrderId,
@@ -22,7 +23,7 @@ import {
 } from "../utils";
 
 export default function OrdersPage() {
-  const { token, isWriter, isAdmin, isSales } = useAuth();
+  const { token, isWriter, isAdmin, isSales, isWriterManager } = useAuth();
   const [orders, setOrders] = useState([]);
   const [pagination, setPagination] = useState(null);
   const [error, setError] = useState("");
@@ -86,7 +87,9 @@ export default function OrdersPage() {
             <p>
               {isWriter
                 ? "Orders assigned to you. Update status here; deliver files by email."
-                : "All assignment orders across websites. Assign writers and update status."}
+                : isWriterManager
+                  ? "Paid and production orders. Review details and assign writers."
+                  : "All assignment orders across websites. Assign writers and update status."}
             </p>
           </div>
         </div>
@@ -118,11 +121,13 @@ export default function OrdersPage() {
                 }
               >
                 <option value="">All</option>
-                {ORDER_STATUSES.map((s) => (
-                  <option key={s} value={s}>
-                    {statusLabel(s)}
-                  </option>
-                ))}
+                {(isWriterManager ? WRITER_MANAGER_STATUSES : ORDER_STATUSES).map(
+                  (s) => (
+                    <option key={s} value={s}>
+                      {statusLabel(s)}
+                    </option>
+                  ),
+                )}
               </select>
             </div>
             <div className="field field-filter">

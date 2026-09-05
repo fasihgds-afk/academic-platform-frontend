@@ -51,7 +51,7 @@ export default function LoginPage() {
           </div>
         </div>
 
-        <p>Sign in with your admin, sales, or writer account.</p>
+        <p>Sign in with your admin, sales, writer, or writer manager account.</p>
 
         {error && <div className="error-banner">{error}</div>}
 

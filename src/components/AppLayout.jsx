@@ -14,7 +14,7 @@ import { useAuth } from "../context/AuthContext";
 import { roleLabel } from "../utils";
 
 export default function AppLayout() {
-  const { user, logout, isAdmin, isWriter } = useAuth();
+  const { user, logout, isAdmin, isSales, isWriter } = useAuth();
   const [navOpen, setNavOpen] = useState(false);
 
   const closeNav = () => setNavOpen(false);
@@ -50,7 +50,7 @@ export default function AppLayout() {
             <ClipboardList className="nav-icon" size={18} strokeWidth={2} />
             {isWriter ? "My Orders" : "Orders"}
           </NavLink>
-          {!isWriter && (
+          {(isAdmin || isSales) && (
             <NavLink to="/students" onClick={closeNav}>
               <Users className="nav-icon" size={18} strokeWidth={2} />
               Students

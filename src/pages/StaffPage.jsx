@@ -69,8 +69,28 @@ export default function StaffPage() {
   const toggleActive = async (user) => {
     setBusy(true);
     setError("");
+    setMessage("");
     try {
       await api.updateStaffStatus(token, user.id, !user.isActive);
+      await load();
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const changeRole = async (user, role) => {
+    if (role === user.role) return;
+
+    setBusy(true);
+    setError("");
+    setMessage("");
+    try {
+      await api.updateStaffRole(token, user.id, role);
+      setMessage(
+        `Role updated to ${roleLabel(role)}. They should sign in again for the new permissions.`,
+      );
       await load();
     } catch (err) {
       setError(err.message);
@@ -89,8 +109,8 @@ export default function StaffPage() {
               Staff
             </h2>
             <p>
-              Create global writers and sales agents. Only admin can assign
-              writers to orders.
+              Create writers, sales agents, and writer managers. Only admin can
+              manage staff.
             </p>
           </div>
         </div>
@@ -173,6 +193,7 @@ export default function StaffPage() {
               >
                 <option value="writer">Writer</option>
                 <option value="salesAgent">Sales Agent</option>
+                <option value="writerManager">Writer Manager</option>
               </select>
             </div>
             <div className="field">
@@ -229,7 +250,23 @@ export default function StaffPage() {
                         {user.fullName}
                         <div className="muted">{user.email}</div>
                       </td>
-                      <td>{roleLabel(user.role)}</td>
+                      <td>
+                        {user.role === "admin" ? (
+                          roleLabel(user.role)
+                        ) : (
+                          <select
+                            className="table-select"
+                            aria-label={`Change role for ${user.fullName}`}
+                            value={user.role}
+                            disabled={busy}
+                            onChange={(e) => changeRole(user, e.target.value)}
+                          >
+                            <option value="writer">Writer</option>
+                            <option value="salesAgent">Sales Agent</option>
+                            <option value="writerManager">Writer Manager</option>
+                          </select>
+                        )}
+                      </td>
                       <td>
                         <span
                           className={`badge ${user.isActive ? "success" : "danger"}`}

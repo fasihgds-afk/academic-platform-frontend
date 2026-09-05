@@ -100,6 +100,13 @@ export const api = {
       body: { isActive },
     }),
 
+  updateStaffRole: (token, userId, role) =>
+    request(`/admin/staff/${userId}/role`, {
+      method: "PATCH",
+      token,
+      body: { role },
+    }),
+
   listWriters: (token) => request("/admin/writers", { token }),
 
   listStudents: (token, params = {}) => {

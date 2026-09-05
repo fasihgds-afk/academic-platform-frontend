@@ -2,6 +2,21 @@ export const ORDER_STATUSES = [
   "draft",
   "awaitingPayment",
   "paid",
+  "detailsMissing",
+  "detailsApproved",
+  "writerAssigned",
+  "inProgress",
+  "submitted",
+  "revisionRequested",
+  "completed",
+  "cancelled",
+  "refunded",
+];
+
+export const WRITER_MANAGER_STATUSES = [
+  "paid",
+  "detailsMissing",
+  "detailsApproved",
   "writerAssigned",
   "inProgress",
   "submitted",
@@ -54,6 +69,8 @@ export function statusBadgeClass(status) {
   const map = {
     awaitingPayment: "warn",
     paid: "info",
+    detailsMissing: "warn",
+    detailsApproved: "success",
     writerAssigned: "info",
     inProgress: "info",
     submitted: "success",
@@ -71,6 +88,7 @@ export function roleLabel(role) {
     admin: "Admin",
     salesAgent: "Sales Agent",
     writer: "Writer",
+    writerManager: "Writer Manager",
     student: "Student",
   };
   return map[role] || role;
@@ -80,7 +98,9 @@ export function roleLabel(role) {
 export function nextStatusesFor(role, currentStatus) {
   const map = {
     admin: {
-      paid: ["writerAssigned", "cancelled"],
+      paid: ["detailsMissing", "detailsApproved", "cancelled"],
+      detailsMissing: ["detailsApproved", "cancelled"],
+      detailsApproved: ["detailsMissing", "cancelled"],
       writerAssigned: ["inProgress", "cancelled"],
       inProgress: ["submitted", "cancelled"],
       submitted: ["revisionRequested", "completed", "cancelled"],
@@ -97,6 +117,11 @@ export function nextStatusesFor(role, currentStatus) {
       writerAssigned: ["inProgress"],
       inProgress: ["submitted"],
       revisionRequested: ["inProgress"],
+    },
+    writerManager: {
+      paid: ["detailsMissing", "detailsApproved"],
+      detailsMissing: ["detailsApproved"],
+      detailsApproved: ["detailsMissing"],
     },
   };
 

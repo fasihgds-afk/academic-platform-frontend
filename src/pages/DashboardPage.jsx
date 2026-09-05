@@ -18,7 +18,10 @@ import { formatMoney } from "../utils";
 const ICON_MAP = {
   "Total orders": ClipboardList,
   "Awaiting payment": Clock3,
-  "Paid / ready": Wallet,
+  "Paid (review)": Wallet,
+  "Details missing": Clock3,
+  "Details approved": BadgeCheck,
+  "Writer assigned": ClipboardList,
   "In progress": Loader2,
   Submitted: FileCheck2,
   Completed: BadgeCheck,
@@ -28,7 +31,7 @@ const ICON_MAP = {
 };
 
 export default function DashboardPage() {
-  const { token, user, isWriter } = useAuth();
+  const { token, user, isWriter, isWriterManager } = useAuth();
   const [stats, setStats] = useState(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
@@ -59,22 +62,32 @@ export default function DashboardPage() {
         { label: "Submitted", value: stats?.submitted },
         { label: "Completed", value: stats?.completed },
       ]
-    : [
-        { label: "Total orders", value: stats?.totalOrders },
-        { label: "Awaiting payment", value: stats?.awaitingPayment },
-        { label: "Paid / ready", value: stats?.paid },
-        { label: "In progress", value: stats?.inProgress },
-        { label: "Submitted", value: stats?.submitted },
-        { label: "Completed", value: stats?.completed },
-        { label: "Students", value: stats?.totalStudents },
-        {
-          label: "Revenue (paid)",
-          value:
-            stats?.revenue !== undefined
-              ? formatMoney(stats.revenue)
-              : undefined,
-        },
-      ];
+    : isWriterManager
+      ? [
+          { label: "Paid (review)", value: stats?.paid },
+          { label: "Details missing", value: stats?.detailsMissing },
+          { label: "Details approved", value: stats?.detailsApproved },
+          { label: "Writer assigned", value: stats?.writerAssigned },
+          { label: "In progress", value: stats?.inProgress },
+          { label: "Submitted", value: stats?.submitted },
+          { label: "Completed", value: stats?.completed },
+        ]
+      : [
+          { label: "Total orders", value: stats?.totalOrders },
+          { label: "Awaiting payment", value: stats?.awaitingPayment },
+          { label: "Paid (review)", value: stats?.paid },
+          { label: "In progress", value: stats?.inProgress },
+          { label: "Submitted", value: stats?.submitted },
+          { label: "Completed", value: stats?.completed },
+          { label: "Students", value: stats?.totalStudents },
+          {
+            label: "Revenue (paid)",
+            value:
+              stats?.revenue !== undefined
+                ? formatMoney(stats.revenue)
+                : undefined,
+          },
+        ];
 
   return (
     <div className="page">
@@ -96,7 +109,7 @@ export default function DashboardPage() {
       {error && <div className="error-banner">{error}</div>}
 
       {loading ? (
-        <StatsSkeleton count={isWriter ? 4 : 8} />
+        <StatsSkeleton count={isWriter ? 4 : isWriterManager ? 7 : 8} />
       ) : (
         <div className="stats-grid">
           {cards.map((card) => {

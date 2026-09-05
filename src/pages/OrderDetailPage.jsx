@@ -22,7 +22,7 @@ import {
 export default function OrderDetailPage() {
   const { orderId } = useParams();
   const [searchParams] = useSearchParams();
-  const { token, user, isAdmin, isSales } = useAuth();
+  const { token, user, isAdmin, isSales, isWriterManager } = useAuth();
   const [data, setData] = useState(null);
   const [writers, setWriters] = useState([]);
   const [writerId, setWriterId] = useState("");
@@ -43,7 +43,7 @@ export default function OrderDetailPage() {
       const res = await api.getOrder(token, orderId);
       setData(res.data);
       setStatus("");
-      if (isAdmin) {
+      if (isAdmin || isWriterManager) {
         const writersRes = await api.listWriters(token);
         setWriters(writersRes.data.writers || []);
       }
@@ -73,6 +73,15 @@ export default function OrderDetailPage() {
 
   const order = data?.order;
   const nextStatuses = order ? nextStatusesFor(user.role, order.status) : [];
+  const canFirstAssign = order?.status === "detailsApproved";
+  const canReassign =
+    isAdmin &&
+    ["writerAssigned", "inProgress", "revisionRequested"].includes(
+      order?.status,
+    );
+  const canAssignWriter =
+    (isAdmin && (canFirstAssign || canReassign)) ||
+    (isWriterManager && canFirstAssign);
 
   const run = async (fn, successText) => {
     setBusy(true);
@@ -349,41 +358,40 @@ export default function OrderDetailPage() {
               <p className="muted">{order.currentWriterId.email}</p>
             )}
 
-            {isAdmin &&
-              ["paid", "writerAssigned", "inProgress", "revisionRequested"].includes(
-                order.status,
-              ) && (
-                <div className="actions-row" style={{ marginTop: 12 }}>
-                  <div className="field">
-                    <label>Assign writer</label>
-                    <select
-                      value={writerId}
-                      onChange={(e) => setWriterId(e.target.value)}
-                      disabled={busy}
-                    >
-                      <option value="">Select writer</option>
-                      {writers.map((w) => (
-                        <option key={w.id} value={w.id}>
-                          {w.fullName} ({w.email})
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                  <button
-                    className="btn btn-primary"
-                    type="button"
-                    disabled={busy || !writerId}
-                    onClick={onAssign}
+            {canAssignWriter && (
+              <div className="actions-row" style={{ marginTop: 12 }}>
+                <div className="field">
+                  <label>
+                    {canReassign ? "Change writer" : "Assign writer"}
+                  </label>
+                  <select
+                    value={writerId}
+                    onChange={(e) => setWriterId(e.target.value)}
+                    disabled={busy}
                   >
-                    {busy ? <ButtonLoader label="Assigning…" /> : (
-                      <>
-                        <UserCheck size={15} strokeWidth={2.25} />
-                        Assign
-                      </>
-                    )}
-                  </button>
+                    <option value="">Select writer</option>
+                    {writers.map((w) => (
+                      <option key={w.id} value={w.id}>
+                        {w.fullName} ({w.email})
+                      </option>
+                    ))}
+                  </select>
                 </div>
-              )}
+                <button
+                  className="btn btn-primary"
+                  type="button"
+                  disabled={busy || !writerId}
+                  onClick={onAssign}
+                >
+                  {busy ? <ButtonLoader label="Assigning…" /> : (
+                    <>
+                      <UserCheck size={15} strokeWidth={2.25} />
+                      Assign
+                    </>
+                  )}
+                </button>
+              </div>
+            )}
           </div>
 
           <div className="panel detail-block animate-in animate-in-delay-2">

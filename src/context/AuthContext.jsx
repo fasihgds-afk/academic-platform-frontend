@@ -3,7 +3,7 @@ import { api } from "../api/client";
 
 const AuthContext = createContext(null);
 
-const PANEL_ROLES = ["admin", "salesAgent", "writer"];
+const PANEL_ROLES = ["admin", "salesAgent", "writer", "writerManager"];
 const STORAGE_KEY = "tutorspath_admin_token";
 
 export function AuthProvider({ children }) {
@@ -57,7 +57,9 @@ export function AuthProvider({ children }) {
     const nextUser = res.data.user;
 
     if (!PANEL_ROLES.includes(nextUser.role)) {
-      throw new Error("Only admin, sales agents, and writers can sign in here");
+      throw new Error(
+        "Only admin, sales agents, writers, and writer managers can sign in here",
+      );
     }
 
     localStorage.setItem(STORAGE_KEY, res.data.token);
@@ -84,6 +86,7 @@ export function AuthProvider({ children }) {
         isAdmin: user?.role === "admin",
         isSales: user?.role === "salesAgent",
         isWriter: user?.role === "writer",
+        isWriterManager: user?.role === "writerManager",
       }}
     >
       {children}

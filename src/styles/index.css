@@ -996,6 +996,33 @@ tbody tr:hover td {
   flex-shrink: 0;
 }
 
+.table-select {
+  min-height: 34px;
+  height: 34px;
+  padding: 0 28px 0 10px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: #fff;
+  color: var(--ink);
+  font-size: 0.8125rem;
+  outline: none;
+  cursor: pointer;
+}
+
+.table-select:hover {
+  border-color: var(--color-primary-border);
+}
+
+.table-select:focus {
+  border-color: var(--color-primary);
+  box-shadow: var(--focus-ring);
+}
+
+.table-select:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
 .field-search {
   flex: 2.2;
   min-width: 240px;
