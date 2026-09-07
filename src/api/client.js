@@ -80,6 +80,12 @@ export const api = {
       body,
     }),
 
+  createPaymentLink: (token, orderId) =>
+    request(`/admin/orders/${orderId}/payment-link`, {
+      method: "POST",
+      token,
+    }),
+
   listStaff: (token, params = {}) => {
     const query = new URLSearchParams(params);
     const qs = query.toString();

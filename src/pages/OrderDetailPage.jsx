@@ -3,7 +3,9 @@ import { Link, useParams, useSearchParams } from "react-router-dom";
 import {
   ArrowLeft,
   ClipboardList,
+  Copy,
   Info,
+  Link2,
   Pencil,
   RefreshCw,
   UserCheck,
@@ -122,6 +124,37 @@ export default function OrderDetailPage() {
     body[priceMode] = num;
 
     return run(() => api.updatePrice(token, orderId, body), "Price updated.");
+  };
+
+  const onPaymentLink = async () => {
+    setBusy(true);
+    setError("");
+    setMessage("");
+    try {
+      const res = await api.createPaymentLink(token, orderId);
+      const url = res.data?.paymentLink?.url;
+      if (!url) {
+        throw new Error("Payment link was not created");
+      }
+      try {
+        await navigator.clipboard.writeText(url);
+        setMessage(
+          "Payment link copied. Send it to the student. It expires in 24 hours.",
+        );
+      } catch {
+        setMessage(
+          "Payment link is ready. Copy it from the box below and send it to the student.",
+        );
+      }
+      setData((prev) => ({
+        ...prev,
+        paymentLink: res.data.paymentLink,
+      }));
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setBusy(false);
+    }
   };
 
   if (loading) {
@@ -334,6 +367,48 @@ export default function OrderDetailPage() {
                     <>
                       <Pencil size={15} strokeWidth={2.25} />
                       Update price
+                    </>
+                  )}
+                </button>
+              </div>
+            )}
+
+            {(isAdmin || isSales) && order.status === "awaitingPayment" && (
+              <div className="stack" style={{ marginTop: 20 }}>
+                <h4 style={{ margin: 0, fontFamily: "var(--display)" }}>
+                  <Link2 size={16} strokeWidth={2.25} className="inline-icon" />
+                  Payment link
+                </h4>
+                <p className="muted" style={{ margin: 0 }}>
+                  Copy and send this to the student on WhatsApp or email. They
+                  pay on Stripe with no login. The website pay option still
+                  works. Only one payment can succeed.
+                </p>
+                {data.paymentLink?.expiresAt && (
+                  <p className="muted" style={{ margin: 0 }}>
+                    Active until {formatDate(data.paymentLink.expiresAt)}
+                  </p>
+                )}
+                {data.paymentLink?.url && (
+                  <div className="field">
+                    <label>Link</label>
+                    <input readOnly value={data.paymentLink.url} />
+                  </div>
+                )}
+                <button
+                  className="btn btn-primary"
+                  type="button"
+                  disabled={busy}
+                  onClick={onPaymentLink}
+                >
+                  {busy ? (
+                    <ButtonLoader label="Creating…" />
+                  ) : (
+                    <>
+                      <Copy size={15} strokeWidth={2.25} />
+                      {data.paymentLink
+                        ? "Copy payment link"
+                        : "Create payment link"}
                     </>
                   )}
                 </button>
