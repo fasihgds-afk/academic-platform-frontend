@@ -5,7 +5,6 @@ import {
   ChevronRight,
   ClipboardList,
   ExternalLink,
-  Pencil,
   Search,
   SearchX,
 } from "lucide-react";
@@ -23,7 +22,7 @@ import {
 } from "../utils";
 
 export default function OrdersPage() {
-  const { token, isWriter, isAdmin, isSales, isWriterManager } = useAuth();
+  const { token, isWriter, isWriterManager } = useAuth();
   const [orders, setOrders] = useState([]);
   const [pagination, setPagination] = useState(null);
   const [error, setError] = useState("");
@@ -35,7 +34,6 @@ export default function OrdersPage() {
     tag: "",
     page: 1,
   });
-  const canEditPrice = isAdmin || isSales;
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -192,36 +190,50 @@ export default function OrdersPage() {
                   return (
                     <tr key={order._id}>
                       <td className="cell-order">
-                        <Link
-                          className="table-link order-id"
-                          to={`/orders/${order._id}`}
-                          title={orderId}
-                        >
-                          {orderId}
-                        </Link>
-                        <div className="muted cell-sub">{order.tag || "—"}</div>
+                        <div className="cell-stack">
+                          <Link
+                            className="table-link order-id"
+                            to={`/orders/${order._id}`}
+                            title={orderId}
+                          >
+                            {orderId}
+                          </Link>
+                          <div className="muted cell-sub" title={order.tag || ""}>
+                            {order.tag || "—"}
+                          </div>
+                        </div>
                       </td>
                       <td className="cell-student">
-                        <div className="cell-primary" title={order.studentId?.fullName || ""}>
-                          {order.studentId?.fullName || "—"}
-                        </div>
-                        <div
-                          className="muted cell-sub"
-                          title={order.studentId?.email || ""}
-                        >
-                          {order.studentId?.email || "—"}
+                        <div className="cell-stack">
+                          <div
+                            className="cell-primary"
+                            title={order.studentId?.fullName || ""}
+                          >
+                            {order.studentId?.fullName || "—"}
+                          </div>
+                          <div
+                            className="muted cell-sub"
+                            title={order.studentId?.email || ""}
+                          >
+                            {order.studentId?.email || "—"}
+                          </div>
                         </div>
                       </td>
                       <td className="cell-title">
-                        <div className="cell-primary" title={title}>
-                          {title}
-                        </div>
-                        <div className="muted cell-sub" title={order.subject || ""}>
-                          {order.subject || "—"}
+                        <div className="cell-stack">
+                          <div className="cell-primary" title={title}>
+                            {title}
+                          </div>
+                          <div className="muted cell-sub" title={order.subject || ""}>
+                            {order.subject || "—"}
+                          </div>
                         </div>
                       </td>
                       <td className="cell-status">
-                        <span className={`badge ${statusBadgeClass(order.status)}`}>
+                        <span
+                          className={`badge ${statusBadgeClass(order.status)}`}
+                          title={statusLabel(order.status)}
+                        >
                           {statusLabel(order.status)}
                         </span>
                       </td>
@@ -252,16 +264,6 @@ export default function OrdersPage() {
                             <ExternalLink size={14} strokeWidth={2.25} />
                             Open
                           </Link>
-                          {canEditPrice && order.status === "awaitingPayment" && (
-                            <Link
-                              className="btn btn-primary btn-sm"
-                              to={`/orders/${order._id}?editPrice=1`}
-                              title="Edit price"
-                            >
-                              <Pencil size={14} strokeWidth={2.25} />
-                              Price
-                            </Link>
-                          )}
                         </div>
                       </td>
                     </tr>

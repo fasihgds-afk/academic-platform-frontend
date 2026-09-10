@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
 import {
+  Eye,
+  EyeOff,
+  Lock,
   Mail,
   Phone,
   UserPlus,
@@ -29,6 +32,7 @@ export default function StaffPage() {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const load = async () => {
     setLoading(true);
@@ -57,6 +61,7 @@ export default function StaffPage() {
     try {
       await api.createStaff(token, form);
       setForm(emptyForm);
+      setShowPassword(false);
       setMessage("Staff member created. They can sign in on this panel.");
       await load();
     } catch (err) {
@@ -198,16 +203,34 @@ export default function StaffPage() {
             </div>
             <div className="field">
               <label>Password</label>
-              <input
-                type="password"
-                required
-                minLength={8}
-                value={form.password}
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, password: e.target.value }))
-                }
-                disabled={busy}
-              />
+              <div className="input-with-icon">
+                <Lock className="field-icon" size={17} strokeWidth={2} aria-hidden="true" />
+                <input
+                  type={showPassword ? "text" : "password"}
+                  required
+                  minLength={8}
+                  autoComplete="new-password"
+                  value={form.password}
+                  onChange={(e) =>
+                    setForm((f) => ({ ...f, password: e.target.value }))
+                  }
+                  disabled={busy}
+                  className="has-trailing-icon"
+                />
+                <button
+                  type="button"
+                  className="icon-btn password-toggle"
+                  onClick={() => setShowPassword((v) => !v)}
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                  tabIndex={-1}
+                >
+                  {showPassword ? (
+                    <EyeOff size={18} strokeWidth={2} />
+                  ) : (
+                    <Eye size={18} strokeWidth={2} />
+                  )}
+                </button>
+              </div>
             </div>
             <button className="btn btn-primary" type="submit" disabled={busy}>
               {busy ? (

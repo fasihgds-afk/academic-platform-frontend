@@ -80,6 +80,12 @@ export const api = {
       body,
     }),
 
+  generatePaymentLink: (token, orderId) =>
+    request(`/payments/orders/${orderId}/payment-link`, {
+      method: "POST",
+      token,
+    }),
+
   listStaff: (token, params = {}) => {
     const query = new URLSearchParams(params);
     const qs = query.toString();
@@ -114,4 +120,28 @@ export const api = {
     const qs = query.toString();
     return request(`/admin/students${qs ? `?${qs}` : ""}`, { token });
   },
+
+  createStudent: (token, body) =>
+    request("/admin/students", {
+      method: "POST",
+      token,
+      body,
+    }),
+
+  getStudent: (token, userId) =>
+    request(`/admin/students/${userId}`, { token }),
+
+  updateStudent: (token, userId, body) =>
+    request(`/admin/students/${userId}`, {
+      method: "PATCH",
+      token,
+      body,
+    }),
+
+  updateStudentStatus: (token, userId, isActive) =>
+    request(`/admin/students/${userId}/status`, {
+      method: "PATCH",
+      token,
+      body: { isActive },
+    }),
 };

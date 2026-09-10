@@ -882,6 +882,14 @@ a.btn-sm {
   font-size: 0.8125rem;
 }
 
+.btn-icon,
+a.btn-icon {
+  width: 34px;
+  min-width: 34px;
+  padding: 0;
+  gap: 0;
+}
+
 .table-wrap {
   overflow-x: auto;
 }
@@ -898,28 +906,38 @@ table {
 }
 
 .orders-table .col-order {
-  width: 140px;
+  width: 11%;
 }
 .orders-table .col-student {
-  width: 180px;
+  width: 15%;
 }
 .orders-table .col-title {
-  width: auto;
+  width: 24%;
 }
 .orders-table .col-status {
-  width: 140px;
+  width: 13%;
 }
 .orders-table .col-amount {
-  width: 100px;
+  width: 7%;
 }
 .orders-table .col-writer {
-  width: 140px;
+  width: 11%;
 }
 .orders-table .col-date {
-  width: 110px;
+  width: 9%;
 }
 .orders-table .col-actions {
-  width: 150px;
+  width: 10%;
+}
+
+.orders-table th,
+.orders-table td {
+  overflow: hidden;
+  vertical-align: middle;
+}
+
+.orders-table .cell-actions {
+  overflow: visible;
 }
 
 th,
@@ -954,9 +972,18 @@ tbody tr:hover td {
   background: rgba(224, 242, 254, 0.55);
 }
 
+.cell-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  max-width: 100%;
+}
+
 .cell-primary,
 .cell-sub,
 .order-id {
+  display: block;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -964,14 +991,9 @@ tbody tr:hover td {
 }
 
 .cell-order .order-id {
-  display: inline-block;
-  max-width: none;
-  overflow: visible;
-  text-overflow: clip;
   font-family: ui-monospace, "Cascadia Code", "Segoe UI Mono", monospace;
   font-size: 0.8rem;
   letter-spacing: -0.01em;
-  white-space: nowrap;
 }
 
 .cell-amount,
@@ -985,15 +1007,37 @@ tbody tr:hover td {
   font-weight: 650;
 }
 
+.cell-status .badge {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cell-actions {
+  overflow: visible;
+  padding-left: 10px;
+  padding-right: 12px;
+}
+
 .actions-inline {
-  display: flex;
+  display: inline-flex;
   flex-wrap: nowrap;
   gap: 6px;
   align-items: center;
+  max-width: 100%;
 }
 
 .actions-inline .btn {
   flex-shrink: 0;
+  gap: 5px;
+  padding: 0 10px;
+}
+
+.actions-inline .btn-icon {
+  width: 34px;
+  min-width: 34px;
+  padding: 0;
+  gap: 0;
 }
 
 .table-select {
@@ -1083,6 +1127,22 @@ tbody tr:hover td {
 .muted {
   color: var(--muted);
   font-size: 0.85rem;
+}
+
+.password-cell {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 180px;
+}
+
+.password-value {
+  font-family: ui-monospace, "Cascadia Code", "Segoe UI Mono", monospace;
+  font-size: 0.84rem;
+  letter-spacing: 0.02em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .error-banner,

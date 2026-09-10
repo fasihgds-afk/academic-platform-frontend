@@ -2,8 +2,12 @@ import { useEffect, useRef, useState } from "react";
 import { Link, useParams, useSearchParams } from "react-router-dom";
 import {
   ArrowLeft,
+  Check,
   ClipboardList,
+  Copy,
+  ExternalLink,
   Info,
+  Link2,
   Pencil,
   RefreshCw,
   UserCheck,
@@ -30,11 +34,28 @@ export default function OrderDetailPage() {
   const [priceMode, setPriceMode] = useState("discountPercentage");
   const [priceValue, setPriceValue] = useState("");
   const [discountReason, setDiscountReason] = useState("");
+  const [paymentLinkUrl, setPaymentLinkUrl] = useState("");
+  const [paymentLinkExpiresAt, setPaymentLinkExpiresAt] = useState(null);
+  const [copied, setCopied] = useState(false);
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
   const priceFormRef = useRef(null);
+
+  const syncPaymentLinkFromPayment = (payment) => {
+    const link = payment?.paymentLink;
+    const expiresAt = link?.expiresAt ? new Date(link.expiresAt) : null;
+    const isValid = Boolean(link?.url && expiresAt && expiresAt > new Date());
+
+    if (isValid) {
+      setPaymentLinkUrl(link.url);
+      setPaymentLinkExpiresAt(expiresAt.toISOString());
+    } else {
+      setPaymentLinkUrl("");
+      setPaymentLinkExpiresAt(null);
+    }
+  };
 
   const load = async () => {
     setLoading(true);
@@ -43,6 +64,7 @@ export default function OrderDetailPage() {
       const res = await api.getOrder(token, orderId);
       setData(res.data);
       setStatus("");
+      syncPaymentLinkFromPayment(res.data?.payment);
       if (isAdmin || isWriterManager) {
         const writersRes = await api.listWriters(token);
         setWriters(writersRes.data.writers || []);
@@ -50,6 +72,8 @@ export default function OrderDetailPage() {
     } catch (err) {
       setError(err.message);
       setData(null);
+      setPaymentLinkUrl("");
+      setPaymentLinkExpiresAt(null);
     } finally {
       setLoading(false);
     }
@@ -121,7 +145,50 @@ export default function OrderDetailPage() {
 
     body[priceMode] = num;
 
-    return run(() => api.updatePrice(token, orderId, body), "Price updated.");
+    return run(
+      () => api.updatePrice(token, orderId, body),
+      "Price updated. Generate a new payment link if you already shared one.",
+    );
+  };
+
+  const onGeneratePaymentLink = async () => {
+    setBusy(true);
+    setError("");
+    setMessage("");
+    setCopied(false);
+    try {
+      const res = await api.generatePaymentLink(token, orderId);
+      const url = res.data?.url || "";
+      const expiresAt = res.data?.expiresAt || null;
+      setPaymentLinkUrl(url);
+      setPaymentLinkExpiresAt(expiresAt);
+      setMessage(
+        url
+          ? "Payment link ready. Copy and share it with the student."
+          : "Payment link generated.",
+      );
+      await load();
+      if (url) {
+        setPaymentLinkUrl(url);
+        setPaymentLinkExpiresAt(expiresAt);
+      }
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const onCopyPaymentLink = async () => {
+    if (!paymentLinkUrl) return;
+    try {
+      await navigator.clipboard.writeText(paymentLinkUrl);
+      setCopied(true);
+      setMessage("Payment link copied to clipboard.");
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      setError("Could not copy link. Select and copy it manually.");
+    }
   };
 
   if (loading) {
@@ -340,10 +407,103 @@ export default function OrderDetailPage() {
               </div>
             )}
 
+            {(isAdmin || isSales) && order.status === "awaitingPayment" && (
+              <div className="stack" style={{ marginTop: 20 }}>
+                <h4 style={{ margin: 0, fontFamily: "var(--display)" }}>
+                  <Link2 size={16} strokeWidth={2.25} className="inline-icon" />
+                  Payment link
+                </h4>
+                <p className="muted" style={{ margin: 0 }}>
+                  Generate a Stripe checkout link and share it with the student.
+                  Existing valid links are reused for 24 hours.
+                </p>
+
+                {paymentLinkUrl ? (
+                  <>
+                    <div className="field">
+                      <label>Link</label>
+                      <input
+                        type="text"
+                        readOnly
+                        value={paymentLinkUrl}
+                        onFocus={(e) => e.target.select()}
+                      />
+                    </div>
+                    {paymentLinkExpiresAt && (
+                      <p className="muted" style={{ margin: 0 }}>
+                        Expires: {formatDate(paymentLinkExpiresAt)}
+                      </p>
+                    )}
+                    <div className="actions-row">
+                      <button
+                        className="btn btn-secondary"
+                        type="button"
+                        disabled={busy}
+                        onClick={onCopyPaymentLink}
+                      >
+                        {copied ? (
+                          <>
+                            <Check size={15} strokeWidth={2.25} />
+                            Copied
+                          </>
+                        ) : (
+                          <>
+                            <Copy size={15} strokeWidth={2.25} />
+                            Copy link
+                          </>
+                        )}
+                      </button>
+                      <a
+                        className="btn btn-secondary"
+                        href={paymentLinkUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        <ExternalLink size={15} strokeWidth={2.25} />
+                        Open
+                      </a>
+                      <button
+                        className="btn btn-primary"
+                        type="button"
+                        disabled={busy}
+                        onClick={onGeneratePaymentLink}
+                      >
+                        {busy ? (
+                          <ButtonLoader label="Generating…" />
+                        ) : (
+                          <>
+                            <RefreshCw size={15} strokeWidth={2.25} />
+                            Refresh link
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  </>
+                ) : (
+                  <button
+                    className="btn btn-primary"
+                    type="button"
+                    disabled={busy}
+                    onClick={onGeneratePaymentLink}
+                  >
+                    {busy ? (
+                      <ButtonLoader label="Generating…" />
+                    ) : (
+                      <>
+                        <Link2 size={15} strokeWidth={2.25} />
+                        Generate payment link
+                      </>
+                    )}
+                  </button>
+                )}
+              </div>
+            )}
+
             {(isAdmin || isSales) && order.status !== "awaitingPayment" && (
               <p className="muted" style={{ marginTop: 16 }}>
-                Price can only be edited while the order is Awaiting Payment.
-                Current status: {statusLabel(order.status)}.
+                Price editing and payment links are only available while the
+                order is Awaiting Payment. Current status:{" "}
+                {statusLabel(order.status)}.
               </p>
             )}
           </div>
