@@ -9,6 +9,7 @@ import OrderDetailPage from "./pages/OrderDetailPage";
 import StaffPage from "./pages/StaffPage";
 import StudentsPage from "./pages/StudentsPage";
 import StudentDetailPage from "./pages/StudentDetailPage";
+import PriceCalculatorPage from "./pages/PriceCalculatorPage";
 
 export default function App() {
   return (
@@ -26,6 +27,7 @@ export default function App() {
               <Route element={<ProtectedRoute roles={["admin", "salesAgent"]} />}>
                 <Route path="students" element={<StudentsPage />} />
                 <Route path="students/:userId" element={<StudentDetailPage />} />
+                <Route path="price-calculator" element={<PriceCalculatorPage />} />
               </Route>
 
               <Route element={<ProtectedRoute roles={["admin"]} />}>

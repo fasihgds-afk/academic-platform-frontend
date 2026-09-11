@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { NavLink, Outlet } from "react-router-dom";
 import {
+  Calculator,
   ClipboardList,
   GraduationCap,
   LayoutDashboard,
@@ -54,6 +55,12 @@ export default function AppLayout() {
             <NavLink to="/students" onClick={closeNav}>
               <Users className="nav-icon" size={18} strokeWidth={2} />
               Students
+            </NavLink>
+          )}
+          {(isAdmin || isSales) && (
+            <NavLink to="/price-calculator" onClick={closeNav}>
+              <Calculator className="nav-icon" size={18} strokeWidth={2} />
+              Price calculator
             </NavLink>
           )}
           {isAdmin && (

@@ -144,4 +144,11 @@ export const api = {
       token,
       body: { isActive },
     }),
+
+  calculatePrice: (token, body) =>
+    request("/admin/calculate-price", {
+      method: "POST",
+      token,
+      body,
+    }),
 };
