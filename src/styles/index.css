@@ -1727,3 +1727,347 @@ tbody tr:hover td {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
+
+@keyframes pay-page-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes pay-card-in {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes pay-check-pop {
+  0% {
+    opacity: 0;
+    transform: scale(0.55);
+  }
+  55% {
+    opacity: 1;
+    transform: scale(1.08);
+  }
+  78% {
+    transform: scale(0.96);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes pay-tick-draw {
+  from {
+    stroke-dashoffset: 42;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes pay-ring {
+  0% {
+    opacity: 0.5;
+    transform: scale(0.72);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.55);
+  }
+}
+
+@keyframes pay-glow {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.08);
+  }
+}
+
+@keyframes pay-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pay-step-in {
+  from {
+    opacity: 0;
+    transform: translateX(-12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes pay-icon-pop {
+  0% {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  70% {
+    transform: scale(1.08);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.pay-success-page {
+  --pay-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 28px 20px 40px;
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 18% 12%, rgba(16, 185, 129, 0.16), transparent 32%),
+    radial-gradient(circle at 88% 8%, rgba(2, 132, 199, 0.16), transparent 30%),
+    linear-gradient(165deg, #ecfdf5 0%, #f8fbff 42%, #f0f9ff 100%);
+  animation: pay-page-in 0.45s ease both;
+}
+
+.pay-success-shell {
+  width: min(520px, 100%);
+  position: relative;
+  z-index: 1;
+}
+
+.pay-success-card {
+  padding: 36px 32px 28px;
+  background: #fff;
+  border: 1px solid rgba(186, 230, 253, 0.85);
+  border-radius: 20px;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.8) inset,
+    0 22px 50px rgba(8, 47, 73, 0.1);
+  animation: pay-card-in 0.7s var(--pay-ease) both;
+  text-align: center;
+}
+
+.pay-success-mark {
+  width: 96px;
+  height: 96px;
+  margin: 0 auto 22px;
+  position: relative;
+  display: grid;
+  place-items: center;
+}
+
+.pay-success-glow {
+  position: absolute;
+  inset: 8px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(52, 211, 153, 0.45), transparent 70%);
+  animation: pay-glow 2.4s ease-in-out 0.9s infinite;
+}
+
+.pay-success-ring {
+  position: absolute;
+  inset: 4px;
+  border-radius: 50%;
+  border: 2px solid rgba(16, 185, 129, 0.4);
+  pointer-events: none;
+}
+
+.pay-success-ring-a {
+  animation: pay-ring 1.35s var(--pay-ease) 0.42s 2 both;
+}
+
+.pay-success-ring-b {
+  animation: pay-ring 1.35s var(--pay-ease) 0.72s 2 both;
+}
+
+.pay-success-check {
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  background: linear-gradient(160deg, #34d399 0%, #059669 100%);
+  box-shadow: 0 12px 28px rgba(5, 150, 105, 0.32);
+  animation: pay-check-pop 0.65s var(--pay-ease) 0.12s both;
+  position: relative;
+  z-index: 1;
+}
+
+.pay-success-svg {
+  width: 44px;
+  height: 44px;
+}
+
+.pay-success-tick {
+  stroke: currentColor;
+  stroke-width: 3.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 42;
+  stroke-dashoffset: 42;
+  animation: pay-tick-draw 0.45s var(--pay-ease) 0.38s forwards;
+}
+
+.pay-success-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 10px;
+  padding: 6px 12px 6px 8px;
+  border-radius: 999px;
+  background: var(--color-success-soft);
+  color: var(--color-success);
+  font-size: 0.72rem;
+  font-weight: 750;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  animation: pay-fade-up 0.5s var(--pay-ease) 0.55s both;
+}
+
+.pay-success-card h1 {
+  margin: 0 0 10px;
+  font-family: var(--display);
+  font-size: 1.7rem;
+  letter-spacing: -0.04em;
+  line-height: 1.15;
+  color: var(--color-text-dark);
+  animation: pay-fade-up 0.55s var(--pay-ease) 0.66s both;
+}
+
+.pay-success-lead {
+  margin: 0 auto 24px;
+  max-width: 38ch;
+  color: var(--color-text-body);
+  font-size: 0.95rem;
+  line-height: 1.55;
+  animation: pay-fade-up 0.55s var(--pay-ease) 0.76s both;
+}
+
+.pay-success-steps {
+  list-style: none;
+  margin: 0;
+  padding: 18px 0 0;
+  border-top: 1px solid var(--line);
+  display: grid;
+  gap: 14px;
+  text-align: left;
+  animation: pay-fade-up 0.5s var(--pay-ease) 0.86s both;
+}
+
+.pay-success-steps li {
+  display: grid;
+  grid-template-columns: 42px 1fr;
+  gap: 12px;
+  align-items: flex-start;
+  animation: pay-step-in 0.55s var(--pay-ease) both;
+}
+
+.pay-success-steps li:nth-child(1) {
+  animation-delay: 0.94s;
+}
+.pay-success-steps li:nth-child(2) {
+  animation-delay: 1.08s;
+}
+.pay-success-steps li:nth-child(3) {
+  animation-delay: 1.22s;
+}
+
+.pay-success-step-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: #ecfdf5;
+  color: var(--color-success);
+  border: 1px solid rgba(16, 185, 129, 0.18);
+  flex-shrink: 0;
+  animation: pay-icon-pop 0.5s var(--pay-ease) both;
+}
+
+.pay-success-steps li:nth-child(1) .pay-success-step-icon {
+  animation-delay: 1s;
+}
+.pay-success-steps li:nth-child(2) .pay-success-step-icon {
+  animation-delay: 1.14s;
+}
+.pay-success-steps li:nth-child(3) .pay-success-step-icon {
+  animation-delay: 1.28s;
+}
+
+.pay-success-steps strong {
+  display: block;
+  font-size: 0.92rem;
+  letter-spacing: -0.01em;
+  color: var(--color-text-dark);
+}
+
+.pay-success-steps p {
+  margin: 3px 0 0;
+  color: var(--muted);
+  font-size: 0.84rem;
+  line-height: 1.45;
+}
+
+.pay-success-foot {
+  margin: 18px 4px 0;
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.82rem;
+  line-height: 1.5;
+  animation: pay-fade-up 0.55s var(--pay-ease) 1.36s both;
+}
+
+@media (max-width: 560px) {
+  .pay-success-card {
+    padding: 28px 20px 22px;
+    border-radius: 16px;
+  }
+
+  .pay-success-card h1 {
+    font-size: 1.42rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pay-success-page,
+  .pay-success-card,
+  .pay-success-check,
+  .pay-success-tick,
+  .pay-success-ring,
+  .pay-success-glow,
+  .pay-success-badge,
+  .pay-success-card h1,
+  .pay-success-lead,
+  .pay-success-steps,
+  .pay-success-steps li,
+  .pay-success-step-icon,
+  .pay-success-foot {
+    animation: none;
+  }
+
+  .pay-success-tick {
+    stroke-dashoffset: 0;
+  }
+}

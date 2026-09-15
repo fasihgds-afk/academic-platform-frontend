@@ -7,6 +7,7 @@ import {
   LayoutDashboard,
   LogOut,
   Menu,
+  Route,
   Users,
   UserCog,
   X,
@@ -67,6 +68,12 @@ export default function AppLayout() {
             <NavLink to="/staff" onClick={closeNav}>
               <UserCog className="nav-icon" size={18} strokeWidth={2} />
               Staff
+            </NavLink>
+          )}
+          {isAdmin && (
+            <NavLink to="/route-configs" onClick={closeNav}>
+              <Route className="nav-icon" size={18} strokeWidth={2} />
+              Route configs
             </NavLink>
           )}
         </nav>

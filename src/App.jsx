@@ -10,6 +10,8 @@ import StaffPage from "./pages/StaffPage";
 import StudentsPage from "./pages/StudentsPage";
 import StudentDetailPage from "./pages/StudentDetailPage";
 import PriceCalculatorPage from "./pages/PriceCalculatorPage";
+import RouteConfigPage from "./pages/RouteConfigPage";
+import PaymentSuccessPage from "./pages/PaymentSuccessPage";
 
 export default function App() {
   return (
@@ -17,6 +19,7 @@ export default function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/payment-success" element={<PaymentSuccessPage />} />
 
           <Route element={<ProtectedRoute />}>
             <Route element={<AppLayout />}>
@@ -32,6 +35,7 @@ export default function App() {
 
               <Route element={<ProtectedRoute roles={["admin"]} />}>
                 <Route path="staff" element={<StaffPage />} />
+                <Route path="route-configs" element={<RouteConfigPage />} />
               </Route>
             </Route>
           </Route>

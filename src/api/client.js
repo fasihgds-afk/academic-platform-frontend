@@ -151,4 +151,29 @@ export const api = {
       token,
       body,
     }),
+
+  listRouteConfigs: (token, siteTag) => {
+    const query = new URLSearchParams();
+    if (siteTag) query.set("siteTag", siteTag);
+    const qs = query.toString();
+    return request(`/admin/route-configs${qs ? `?${qs}` : ""}`, { token });
+  },
+
+  upsertRouteConfig: (token, body) =>
+    request("/admin/route-configs", {
+      method: "PUT",
+      token,
+      body,
+    }),
+
+  deleteRouteConfig: (token, siteTag, path) => {
+    const query = new URLSearchParams();
+    if (siteTag) query.set("siteTag", siteTag);
+    if (path) query.set("path", path);
+    const qs = query.toString();
+    return request(`/admin/route-configs${qs ? `?${qs}` : ""}`, {
+      method: "DELETE",
+      token,
+    });
+  },
 };
