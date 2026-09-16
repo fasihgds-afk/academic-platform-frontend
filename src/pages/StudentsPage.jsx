@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import {
+  Check,
   ChevronLeft,
   ChevronRight,
+  Copy,
   Eye,
   EyeOff,
   Mail,
@@ -37,6 +39,7 @@ export default function StudentsPage() {
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
   const [visiblePasswords, setVisiblePasswords] = useState(() => new Set());
+  const [copiedId, setCopiedId] = useState("");
   const [filters, setFilters] = useState({
     search: "",
     tag: "",
@@ -71,6 +74,20 @@ export default function StudentsPage() {
       else next.add(studentId);
       return next;
     });
+  };
+
+  const copyPassword = async (student) => {
+    const password = student.password || "";
+    if (!password) return;
+    try {
+      await navigator.clipboard.writeText(password);
+      setCopiedId(student.id);
+      window.setTimeout(() => {
+        setCopiedId((current) => (current === student.id ? "" : current));
+      }, 1600);
+    } catch {
+      setError("Could not copy password. Copy it manually instead.");
+    }
   };
 
   const onCreate = async (e) => {
@@ -320,20 +337,38 @@ export default function StudentsPage() {
                               : "—"}
                           </span>
                           {password ? (
-                            <button
-                              type="button"
-                              className="icon-btn"
-                              onClick={() => togglePassword(student.id)}
-                              aria-label={
-                                isVisible ? "Hide password" : "Show password"
-                              }
-                            >
-                              {isVisible ? (
-                                <EyeOff size={16} strokeWidth={2} />
-                              ) : (
-                                <Eye size={16} strokeWidth={2} />
-                              )}
-                            </button>
+                            <>
+                              <button
+                                type="button"
+                                className={`icon-btn${copiedId === student.id ? " is-copied" : ""}`}
+                                onClick={() => copyPassword(student)}
+                                aria-label={
+                                  copiedId === student.id
+                                    ? "Password copied"
+                                    : "Copy password"
+                                }
+                              >
+                                {copiedId === student.id ? (
+                                  <Check size={16} strokeWidth={2.25} />
+                                ) : (
+                                  <Copy size={16} strokeWidth={2} />
+                                )}
+                              </button>
+                              <button
+                                type="button"
+                                className="icon-btn"
+                                onClick={() => togglePassword(student.id)}
+                                aria-label={
+                                  isVisible ? "Hide password" : "Show password"
+                                }
+                              >
+                                {isVisible ? (
+                                  <EyeOff size={16} strokeWidth={2} />
+                                ) : (
+                                  <Eye size={16} strokeWidth={2} />
+                                )}
+                              </button>
+                            </>
                           ) : null}
                         </div>
                       </td>

@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import {
   ArrowLeft,
+  Check,
+  Copy,
   CreditCard,
   Info,
   Pencil,
@@ -38,6 +40,7 @@ export default function StudentDetailPage() {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   const load = async () => {
     setLoading(true);
@@ -91,6 +94,18 @@ export default function StudentDetailPage() {
       setError(err.message);
     } finally {
       setBusy(false);
+    }
+  };
+
+  const copyCurrentPassword = async () => {
+    const password = data?.student?.password || "";
+    if (!password) return;
+    try {
+      await navigator.clipboard.writeText(password);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 1600);
+    } catch {
+      setError("Could not copy password. Copy it manually instead.");
     }
   };
 
@@ -266,8 +281,24 @@ export default function StudentDetailPage() {
                   disabled={busy}
                 />
               </div>
-              <p className="muted" style={{ margin: 0 }}>
-                Current password on file: {student.password || "—"}
+              <p className="muted password-on-file">
+                <span>
+                  Current password on file: {student.password || "—"}
+                </span>
+                {student.password ? (
+                  <button
+                    type="button"
+                    className={`icon-btn${copied ? " is-copied" : ""}`}
+                    onClick={copyCurrentPassword}
+                    aria-label={copied ? "Password copied" : "Copy password"}
+                  >
+                    {copied ? (
+                      <Check size={16} strokeWidth={2.25} />
+                    ) : (
+                      <Copy size={16} strokeWidth={2} />
+                    )}
+                  </button>
+                ) : null}
               </p>
               <button className="btn btn-primary" type="submit" disabled={busy}>
                 {busy ? (
