@@ -256,24 +256,24 @@ export default function StaffPage() {
             <div className="empty-state">No staff yet.</div>
           ) : (
             <div className="table-wrap">
-              <table>
+              <table className="stack-table">
                 <thead>
                   <tr>
                     <th>Name</th>
                     <th>Role</th>
                     <th>Status</th>
                     <th>Joined</th>
-                    <th />
+                    <th>Action</th>
                   </tr>
                 </thead>
                 <tbody>
                   {staff.map((user) => (
                     <tr key={user.id}>
-                      <td>
+                      <td data-label="Name">
                         {user.fullName}
                         <div className="muted">{user.email}</div>
                       </td>
-                      <td>
+                      <td data-label="Role">
                         {user.role === "admin" ? (
                           roleLabel(user.role)
                         ) : (
@@ -290,15 +290,15 @@ export default function StaffPage() {
                           </select>
                         )}
                       </td>
-                      <td>
+                      <td data-label="Status">
                         <span
                           className={`badge ${user.isActive ? "success" : "danger"}`}
                         >
                           {user.isActive ? "Active" : "Inactive"}
                         </span>
                       </td>
-                      <td>{formatDate(user.createdAt)}</td>
-                      <td>
+                      <td data-label="Joined">{formatDate(user.createdAt)}</td>
+                      <td className="cell-actions">
                         {user.role !== "admin" && (
                           <button
                             className={`btn btn-sm ${user.isActive ? "btn-danger" : "btn-secondary"}`}

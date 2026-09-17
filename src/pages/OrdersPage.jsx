@@ -159,7 +159,7 @@ export default function OrdersPage() {
           </div>
         ) : (
           <div className="table-wrap">
-            <table className="data-table orders-table">
+            <table className="data-table orders-table stack-table">
               <colgroup>
                 <col className="col-order" />
                 <col className="col-student" />
@@ -189,7 +189,7 @@ export default function OrdersPage() {
 
                   return (
                     <tr key={order._id}>
-                      <td className="cell-order">
+                      <td className="cell-order" data-label="Order ID">
                         <div className="cell-stack">
                           <Link
                             className="table-link order-id"
@@ -203,7 +203,7 @@ export default function OrdersPage() {
                           </div>
                         </div>
                       </td>
-                      <td className="cell-student">
+                      <td className="cell-student" data-label="Student">
                         <div className="cell-stack">
                           <div
                             className="cell-primary"
@@ -219,7 +219,7 @@ export default function OrdersPage() {
                           </div>
                         </div>
                       </td>
-                      <td className="cell-title">
+                      <td className="cell-title" data-label="Title">
                         <div className="cell-stack">
                           <div className="cell-primary" title={title}>
                             {title}
@@ -229,7 +229,7 @@ export default function OrdersPage() {
                           </div>
                         </div>
                       </td>
-                      <td className="cell-status">
+                      <td className="cell-status" data-label="Status">
                         <span
                           className={`badge ${statusBadgeClass(order.status)}`}
                           title={statusLabel(order.status)}
@@ -237,13 +237,13 @@ export default function OrdersPage() {
                           {statusLabel(order.status)}
                         </span>
                       </td>
-                      <td className="cell-amount">
+                      <td className="cell-amount" data-label="Amount">
                         {formatMoney(
                           order.pricing?.finalAmount,
                           order.pricing?.currency,
                         )}
                       </td>
-                      <td className="cell-writer">
+                      <td className="cell-writer" data-label="Writer">
                         <div
                           className="cell-primary"
                           title={order.currentWriterId?.fullName || "Unassigned"}
@@ -251,10 +251,10 @@ export default function OrdersPage() {
                           {order.currentWriterId?.fullName || "Unassigned"}
                         </div>
                       </td>
-                      <td className="cell-date" title={order.createdAt || ""}>
+                      <td className="cell-date" data-label="Created" title={order.createdAt || ""}>
                         {formatDateShort(order.createdAt)}
                       </td>
-                      <td className="cell-actions">
+                      <td className="cell-actions" data-label="Action">
                         <div className="actions-inline">
                           <Link
                             className="btn btn-secondary btn-sm"

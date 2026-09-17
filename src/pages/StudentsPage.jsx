@@ -301,7 +301,7 @@ export default function StudentsPage() {
           </div>
         ) : (
           <div className="table-wrap">
-            <table>
+            <table className="stack-table">
               <thead>
                 <tr>
                   <th>Name</th>
@@ -310,7 +310,7 @@ export default function StudentsPage() {
                   <th>Website</th>
                   <th>Status</th>
                   <th>Joined</th>
-                  <th />
+                  <th>Action</th>
                 </tr>
               </thead>
               <tbody>
@@ -320,14 +320,14 @@ export default function StudentsPage() {
 
                   return (
                     <tr key={student.id}>
-                      <td>{student.fullName}</td>
-                      <td>
+                      <td data-label="Name">{student.fullName}</td>
+                      <td data-label="Contact">
                         {student.email}
                         <div className="muted">
                           {student.countryCode} {student.phoneNumber}
                         </div>
                       </td>
-                      <td>
+                      <td data-label="Password">
                         <div className="password-cell">
                           <span className="password-value">
                             {password
@@ -372,16 +372,16 @@ export default function StudentsPage() {
                           ) : null}
                         </div>
                       </td>
-                      <td>{student.tag}</td>
-                      <td>
+                      <td data-label="Website">{student.tag}</td>
+                      <td data-label="Status">
                         <span
                           className={`badge ${student.isActive ? "success" : "danger"}`}
                         >
                           {student.isActive ? "Active" : "Inactive"}
                         </span>
                       </td>
-                      <td>{formatDate(student.createdAt)}</td>
-                      <td>
+                      <td data-label="Joined">{formatDate(student.createdAt)}</td>
+                      <td className="cell-actions">
                         <Link
                           className="btn btn-secondary btn-sm"
                           to={`/students/${student.id}`}

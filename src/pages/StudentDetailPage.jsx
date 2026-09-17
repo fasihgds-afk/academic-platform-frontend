@@ -333,38 +333,38 @@ export default function StudentDetailPage() {
               <p className="muted">No orders yet.</p>
             ) : (
               <div className="table-wrap">
-                <table>
+                <table className="stack-table">
                   <thead>
                     <tr>
                       <th>Order</th>
                       <th>Status</th>
                       <th>Payment</th>
                       <th>Amount</th>
-                      <th />
+                      <th>Action</th>
                     </tr>
                   </thead>
                   <tbody>
                     {orders.map((order) => (
                       <tr key={order._id}>
-                        <td>
+                        <td data-label="Order">
                           {formatOrderId(order)}
                           <div className="muted">{order.title}</div>
                         </td>
-                        <td>
+                        <td data-label="Status">
                           <span
                             className={`badge ${statusBadgeClass(order.status)}`}
                           >
                             {statusLabel(order.status)}
                           </span>
                         </td>
-                        <td>{order.paymentStatus || "—"}</td>
-                        <td>
+                        <td data-label="Payment">{order.paymentStatus || "—"}</td>
+                        <td data-label="Amount">
                           {formatMoney(
                             order.pricing?.finalAmount,
                             order.pricing?.currency,
                           )}
                         </td>
-                        <td>
+                        <td className="cell-actions">
                           <Link
                             className="btn btn-secondary btn-sm"
                             to={`/orders/${order._id}`}

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { NavLink, Outlet } from "react-router-dom";
 import {
   Calculator,
@@ -21,8 +21,21 @@ export default function AppLayout() {
 
   const closeNav = () => setNavOpen(false);
 
+  useEffect(() => {
+    document.body.classList.toggle("nav-open", navOpen);
+    return () => document.body.classList.remove("nav-open");
+  }, [navOpen]);
+
   return (
-    <div className="app-shell">
+    <div className={`app-shell${navOpen ? " is-nav-open" : ""}`}>
+      {navOpen ? (
+        <button
+          type="button"
+          className="nav-backdrop"
+          aria-label="Close menu"
+          onClick={closeNav}
+        />
+      ) : null}
       <aside className="sidebar">
         <div className="brand">
           <div className="brand-logo" aria-hidden="true">
@@ -83,7 +96,14 @@ export default function AppLayout() {
           <span>
             {roleLabel(user?.role)} · {user?.email}
           </span>
-          <button className="btn btn-ghost btn-sm" type="button" onClick={logout}>
+          <button
+            className="btn btn-ghost btn-sm"
+            type="button"
+            onClick={() => {
+              closeNav();
+              logout();
+            }}
+          >
             <LogOut size={15} strokeWidth={2.25} />
             Sign out
           </button>
